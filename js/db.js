@@ -17,13 +17,48 @@ function shuffle(arr) {
   return a;
 }
 
-function genWrongs(correct, range = 5) {
-  const set = new Set();
-  while (set.size < 3) {
-    const w = correct + rand(-range, range);
-    if (w !== correct && w > 0) set.add(w);
+// ── Колода таблицы умножения ─────────────────────────
+//
+// Базовая таблица — множители 2…9; 10, 11 и 12 в неё не входят и решаются
+// без её знания. В колоде все 36 фактов (5 × 7 и 7 × 5 — один факт, порядок
+// множителей в вопросе случайный): пока колода не кончилась, пример не
+// повторяется, поэтому за тренировку ребёнок проходит всю таблицу целиком.
+// Сложных пар (с множителем 6, 7, 8 или 9) — 26 из 36, и они разложены
+// равномерно, по одной лёгкой между группами, поэтому в любых 15 подряд
+// вопросах сложных не меньше 10.
+
+const TABLE_MIN = 2, TABLE_MAX = 9, TABLE_HARD_FROM = 6;
+
+let multiplicationCards = [];
+
+function multiplicationDeck() {
+  const hard = [], easy = [];
+  for (let a = TABLE_MIN; a <= TABLE_MAX; a++)
+    for (let b = a; b <= TABLE_MAX; b++)     // a ≤ b, поэтому больший множитель — b
+      (b >= TABLE_HARD_FROM ? hard : easy).push([a, b]);
+  const h = shuffle(hard), e = shuffle(easy), deck = [];
+  let taken = 0;
+  e.forEach((pair, i) => {
+    const upto = Math.round((i + 1) * h.length / e.length);
+    deck.push(...h.slice(taken, upto), pair);
+    taken = upto;
+  });
+  return deck.concat(h.slice(taken));
+}
+
+// Варианты ответа — соседние факты таблицы (ошибиться на строку или столбец
+// проще всего), а не случайные числа рядом с ответом.
+function multiplicationWrongs(a, b) {
+  const correct = a * b;
+  const near = shuffle([correct - a, correct + a, correct - b, correct + b,
+                        correct - a - b + 1, correct + a + b + 1]);
+  const wrongs = new Set();
+  for (const w of near) if (wrongs.size < 3 && w > 0 && w !== correct) wrongs.add(w);
+  for (let d = 1; wrongs.size < 3; d++) {    // 2 × 2: соседей в таблице не хватает
+    if (correct - d > 0) wrongs.add(correct - d);
+    if (wrongs.size < 3) wrongs.add(correct + d);
   }
-  return [...set];
+  return [...wrongs];
 }
 
 // ── Банк вопросов ─────────────────────────────────────
@@ -33,12 +68,13 @@ const DB = {
   // ─── Тема 1: Таблица умножения ───
 
   multiplication() {
-    const a = rand(2, 12);
-    const b = rand(2, 12);
+    if (!multiplicationCards.length) multiplicationCards = multiplicationDeck();
+    const [x, y] = multiplicationCards.shift();
+    const [a, b] = Math.random() < 0.5 ? [x, y] : [y, x];
     return {
       question: `${a} × ${b}`,
       correctAnswer: a * b,
-      options: shuffle([a * b, ...genWrongs(a * b, 4)])
+      options: shuffle([a * b, ...multiplicationWrongs(a, b)])
     };
   },
 
