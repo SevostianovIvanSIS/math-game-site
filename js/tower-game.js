@@ -385,7 +385,7 @@ const TowerGame = {
     const deck = document.querySelector('.game-content');
     if (deck) {
       const t = deck.getBoundingClientRect().top;
-      if (t > this.h * 0.35) return t;
+      if (t > 0) return t;
     }
     return this.h * 0.72;
   },

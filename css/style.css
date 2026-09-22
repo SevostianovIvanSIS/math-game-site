@@ -828,3 +828,14 @@ footer span { margin: 0 12px; color: #b5a6ff; }
   max-height: calc(100dvh - clamp(240px, 38dvh, 340px) - 24px);
 }
 .mode-battle ~ .game-content > * { flex-shrink: 0; }
+
+/* В башне оставляем место для прицеливания; решённое задание убираем
+   на время размещения вместе с его вариантами и рисунком. */
+.mode-tower ~ .game-content {
+  max-height: calc(100dvh - clamp(300px, 45dvh, 420px) - 24px);
+}
+.mode-tower ~ .game-content > * { flex-shrink: 0; }
+.mode-tower ~ .game-content:has(> .pending-box) > :not(.pending-box) {
+  display: none;
+}
+.mode-tower ~ .game-content > .pending-box { width: 100%; margin-top: 0; }
