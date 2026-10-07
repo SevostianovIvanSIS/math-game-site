@@ -22,13 +22,13 @@ const App = {
   currentTopic: null,
   subject: localStorage.getItem("learning_subject") || "math",
   grade: localStorage.getItem("learning_grade") || "5",
-  visibleTopics() { return TOPICS.filter(t => t.subject === this.subject && (!t.min || t.min <= Number(this.grade))); },
+  visibleTopics() { return TOPICS.filter(t => t.subject === this.subject && (t.min ? t.min <= Number(this.grade) : Number(this.grade) > 1)); },
   setSubject(id) {
     if (!["math", "russian"].includes(id)) return;
     this.subject=id; localStorage.setItem("learning_subject",id);
     this.currentMode="garden"; localStorage.setItem("mathgame_mode", "garden"); this.renderHome();
   },
-  setGrade(value) { this.grade=value; localStorage.setItem("learning_grade",value); this.renderHome(); },
+  setGrade(value) { if (!["1","2","3","4","5"].includes(String(value))) return; this.grade=String(value); if (this.grade === "1") { this.currentMode="garden"; localStorage.setItem("mathgame_mode","garden"); } localStorage.setItem("learning_grade",value); this.renderHome(); },
   currentMode: localStorage.getItem('mathgame_mode') || window.DEFAULT_MODE,
 
   init() {
@@ -43,7 +43,7 @@ const App = {
     if (!["math", "russian"].includes(this.subject)) this.subject="math";
     document.getElementById('subject-switch').innerHTML = [['math','✖️','Математика'],['russian','Аа','Русский язык']].map(([id,icon,name])=>`<button class="subject-card ${this.subject===id?'active':''}" aria-pressed="${this.subject===id}" onclick="App.setSubject('${id}')"><b>${icon}</b><span>${name}</span></button>`).join('');
     document.getElementById('grade-select').value=this.grade;
-    document.querySelector('.hero-cube').innerHTML=this.subject==='russian'?'А<span>→</span>Я':'7<span>×</span>8';
+    document.querySelector('.hero-cube').innerHTML=this.subject==='russian'?'А<span>→</span>Я':this.grade==='1'?'2<span>+</span>3':'7<span>×</span>8';
     const topics=this.visibleTopics();
     const stats=topics.map(t=>Learning.stats(t.id));
     const recommended=topics.slice().sort((a,b)=>Learning.stats(b.id).review-Learning.stats(a.id).review || Learning.stats(a.id).attempts-Learning.stats(b.id).attempts).find(t=>this.isUnlocked(t));

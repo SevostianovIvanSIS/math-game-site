@@ -771,7 +771,7 @@ footer span { margin: 0 12px; color: #b5a6ff; }
 }
 
 /* Два предмета и обучение с объяснениями */
-.subject-switch { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:18px 0; }
+.subject-switch { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:18px 0; }
 .subject-card { display:flex; align-items:center; gap:16px; text-align:left; padding:22px; border:2px solid #dedcf2; border-radius:22px; background:#fff; color:#302852; font:700 22px var(--font); cursor:pointer; }
 .subject-card b { display:grid; place-items:center; width:52px;height:52px; border-radius:15px;background:#f0ebff; }
 .subject-card.active { border-color:#7755d9; background:#f4efff; box-shadow:0 6px 22px #7755d918; }
@@ -839,3 +839,5 @@ footer span { margin: 0 12px; color: #b5a6ff; }
   display: none;
 }
 .mode-tower ~ .game-content > .pending-box { width: 100%; margin-top: 0; }
+
+@media(max-width:360px){.subject-card{flex-direction:column;gap:6px}.subject-card span{overflow-wrap:anywhere}}
