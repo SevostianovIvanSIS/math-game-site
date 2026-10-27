@@ -13,6 +13,8 @@
     ['syntax','Основа предложения','🧭','Найди подлежащее и сказуемое',3,5],
   ].map(([id,name,icon,desc,min,max]) => ({id:'ru_'+id,name,icon,desc,min,max,subject:'russian',next:true}));
   topics.push(...[
+    ['fraction_ops','Действия с дробями','🥧','Сравнивай, сокращай, складывай и вычитай',3,5],
+    ['equations','Уравнения','⚖️','Найди x и проверь подстановкой',2,5],
     ['average','Среднее арифметическое','⚖️','Сумма, количество и пропущенное число',4,5],
     ['logic','Математическая мастерская','🧠','Закономерности, логика и комбинаторика',2,5],
     ['problems','Задачи в несколько шагов','🚀','Покупки, периметр и совместная работа',3,5]
@@ -316,7 +318,69 @@
   bank.ru_both.forEach(q=>{q.spoken=q.question.replace('___',q.correctAnswer);});
   const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
   const math = (id,q,a,e,h,g,extra={})=>({id,question:q,correctAnswer:a,explanation:e,hint:h,grade:g,type:'input',inputmode:'decimal',pace:'long',...extra});
+  // Каноническая запись исключает равные дроби среди вариантов ответа.
+  const fraction = (n,d) => {
+    const gcd=(a,b)=>b?gcd(b,a%b):a;
+    const g=gcd(n,d); n/=g; d/=g;
+    return d===1?String(n):`${n}/${d}`;
+  };
   const generators = {
+    fraction_ops(grade=5) {
+      const kind=rand(0,grade>=5?5:grade>=4?3:1);
+      const d=rand(3,12), a=rand(1,d-1), b=rand(1,d-1), k=rand(2,5);
+      const make=(q,answer,e,h,g,options=null)=>math(`frac_${kind}_${d}_${a}_${b}_${k}`,q,answer,e,h,g,
+        options?{type:'choice',options,inputmode:'text'}:{});
+      if(kind===0) {
+        const sign=a===b?'=':a<b?'<':'>';
+        return make(`Сравни дроби: ${a}/${d} □ ${b}/${d}`,sign,
+          `Знаменатели равны. Сравниваем числители: ${a} ${sign} ${b}. Поэтому ${a}/${d} ${sign} ${b}/${d}.`,
+          'При одинаковых знаменателях больше дробь с большим числителем.',3,['<','>','=']);
+      }
+      if(kind===1)return make(`Найди ${a}/${d} от числа ${d*k}.`,a*k,
+        `${d*k} ÷ ${d} × ${a} = ${a*k}. Сначала находим одну долю, затем берём ${a}.`,
+        'Раздели число на знаменатель и умножь на числитель.',3);
+      let n,den=d,q,e,h;
+      if(kind===2) {
+        n=a+b; q=`Вычисли: ${a}/${d} + ${b}/${d}`;
+        e=`Складываем числители: ${a} + ${b} = ${n}. Знаменатель остаётся ${d}.`;
+        h='При сложении дробей с одинаковым знаменателем складывай только числители.';
+      } else if(kind===3) {
+        n=Math.abs(a-b); q=`Вычисли: ${Math.max(a,b)}/${d} − ${Math.min(a,b)}/${d}`;
+        e=`Вычитаем числители: ${Math.max(a,b)} − ${Math.min(a,b)} = ${n}. Знаменатель остаётся ${d}.`;
+        h='Вычитай числители, а общий знаменатель оставь прежним.';
+      } else if(kind===4) {
+        n=a; q=`Сократи дробь: ${a*k}/${d*k}`;
+        e=`Делим числитель и знаменатель на ${k}: получаем ${a}/${d}. Если есть общий делитель, сокращаем ещё.`;
+        h='Раздели числитель и знаменатель на одно и то же число больше 1.';
+      } else {
+        den=d*k; n=a*k+b; q=`Вычисли: ${a}/${d} + ${b}/${den}`;
+        e=`Приводим к знаменателю ${den}: ${a}/${d} = ${a*k}/${den}. Складываем: (${a*k} + ${b})/${den} = ${n}/${den}.`;
+        h='Умножь числитель и знаменатель первой дроби так, чтобы знаменатели стали одинаковыми.';
+      }
+      const answer=fraction(n,den), options=[answer];
+      for(let offset=1;options.length<4;offset++) {
+        const wrong=fraction(n+offset,den);
+        if(!options.includes(wrong))options.push(wrong);
+      }
+      return make(q,answer,`${e} Ответ в сокращённом виде: ${answer}.`,h,kind>=4?5:4,options);
+    },
+    equations(grade=5) {
+      const kind=rand(0,grade>=5?7:grade>=4?6:grade>=3?5:2);
+      const x=rand(1,grade===2?10:20), a=rand(2,grade===2?10:12), b=rand(1,15);
+      const forms=[
+        [`x + ${a} = ${x+a}`,`${x+a} − ${a} = ${x}`,'Чтобы найти слагаемое, вычти из суммы известное слагаемое.',2],
+        [`x − ${a} = ${x}`,`${x} + ${a} = ${x+a}`,'Чтобы найти уменьшаемое, сложи разность и вычитаемое.',2],
+        [`${x+a} − x = ${a}`,`${x+a} − ${a} = ${x}`,'Чтобы найти вычитаемое, вычти разность из уменьшаемого.',2],
+        [`${a} × x = ${a*x}`,`${a*x} ÷ ${a} = ${x}`,'Чтобы найти множитель, раздели произведение на известный множитель.',3],
+        [`x ÷ ${a} = ${x}`,`${x} × ${a} = ${x*a}`,'Чтобы найти делимое, умножь частное на делитель.',3],
+        [`${a*x} ÷ x = ${a}`,`${a*x} ÷ ${a} = ${x}`,'Чтобы найти делитель, раздели делимое на частное.',3],
+        [`${a} × x + ${b} = ${a*x+b}`,`(${a*x+b} − ${b}) ÷ ${a} = ${x}`,'Сначала вычти слагаемое из правой части, затем раздели на множитель.',4],
+        [`${a} × (x + ${b}) = ${a*(x+b)}`,`${a*(x+b)} ÷ ${a} − ${b} = ${x}`,'Сначала раздели обе части на множитель перед скобками, затем вычти известное слагаемое.',5]
+      ];
+      const [equation,solution,hint,g]=forms[kind], answer=kind===1?x+a:kind===4?x*a:x;
+      return math(`eq_${kind}_${x}_${a}_${b}`,`Реши уравнение: ${equation}. Чему равен x?`,answer,
+        `x = ${solution}. Проверка: ${equation.replace('x',String(answer))} — верное равенство.`,hint,g);
+    },
     average(grade=5) {
       const kind=rand(0,grade>=5?3:1), n=rand(3,5), mean=rand(4,20), d=rand(1,3);
       const nums=Array(n).fill(mean); nums[0]-=d;nums[1]+=d;
