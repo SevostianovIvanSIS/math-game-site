@@ -1,7 +1,7 @@
 // Мини-игры с предметными моделями. Все данные вопроса сериализуются для повторения.
 (() => {
   const meta={
-    harvest:{icon:'🍎',name:'Делим урожай',desc:'Разложи яблоки поровну и собери нужную долю.',levels:['Равные доли','Часть урожая','Что осталось?']},
+    harvest:{icon:'🐰',name:'Пикник для зайчат',desc:'Угости зайчат нужной долей урожая — целыми корзинками.',levels:['Одна корзинка — одна доля','Угощение для зайчат','Делимся с белочкой']},
     motion:{icon:'🐇',name:'Кто встретится у фонтана?',desc:'Двигай героев и наблюдай, как время превращается в путь.',levels:['Путь до флажка','Идём навстречу','Удаление и погоня']},
     geometry:{icon:'🏡',name:'Строим настоящий сад',desc:'Поставь забор, замости грядку и открой калитку.',levels:['Забор · периметр','Плитки · площадь','Калитка · углы']}
   };
@@ -18,11 +18,11 @@
       const d=level===0?2+seed%2:3+seed%3,unit=2+(seed+level)%3,n=level===0?1:1+seed%(d-1),total=d*unit;
       const take=level===2?d-n:n;
       interaction={kind,total,d,n,take,unit,remaining:level===2};
-      question=`Раздели ${apples(total)} на равные доли. Корзин: ${d}. ${level===2?`Зайцу нужно ${n}/${d} урожая. Покажи, что ОСТАНЕТСЯ.`:`Собери для зайца ${n}/${d} урожая.`}`;
+      question=level===2?`Белочке оставим ${n}/${d} урожая. Отдай зайчатам всё остальное.`:`Угости зайчат: им нужно ${n}/${d} всего урожая.`;
       correctAnswer=`${apples(take*unit)} · ${take} из ${d} корзин`;
-      explanation=`Одна доля: ${total} ÷ ${d} = ${unit} яблока. ${level===2?`После ${n}/${d} остаётся ${d-n}/${d}. `:''}${take}/${d} урожая: ${unit} × ${take} = ${apples(unit*take)}. Знаменатель ${d} — все равные корзины, числитель ${take} — выбранные.`;
-      rule='Дроби работают с РАВНЫМИ частями. Сначала делим весь урожай поровну, потом берём нужное число долей.';
-      hint=`Разложи по ${unit} яблока в каждую корзину. ${level===2?`Оставь ${d-n} корзины после доли зайца.`:`Нужны ${n} корзины из ${d}.`}`;
+      explanation=`Одна доля: ${total} ÷ ${d} = ${unit} яблока. ${level===2?`После доли белочки ${n}/${d} остаётся ${d-n}/${d} для зайчат. `:''}${take}/${d} урожая: ${unit} × ${take} = ${apples(unit*take)}. Знаменатель ${d} — все равные корзины, числитель ${take} — выбранные.`;
+      rule='Урожай уже поровну разложен в корзинки. Одна корзинка — одна доля. Снизу в дроби — все корзинки, сверху — сколько нужно отдать.';
+      hint=`В каждой корзинке ${apples(unit)}. Отправь зайчатам ${take} из ${d} корзинок${level===2?`, чтобы белочке осталось ${n}/${d}`:''}.`;
     }else if(kind==='motion'){
       const type=level===0?'single':level===1?'meet':['apart','chase','meet'][seed%3];
       const time=2+seed%3,v1=level===2?4+seed%2:2+seed%2,v2=2;
@@ -81,10 +81,10 @@
       Round.baseRounds=3;GAME_MODES.garden.init();Round.mode=GAME_MODES.garden;document.querySelector('#game-screen .btn-back').textContent='← В сад открытий';},
     open(kind){if(!meta[kind])return;this.prepare(kind);const m=meta[kind];
       document.getElementById('score-display').textContent=m.name;
-      document.getElementById('game-content').innerHTML=`<div class="lesson-intro mini-intro"><div class="lesson-eyebrow">${m.icon} МАТЕМАТИКА В ДЕЙСТВИИ</div><h2>${m.name}</h2><p>${m.desc}</p><div class="lesson-rule"><b>Как играть</b><p>${kind==='harvest'?'Перетаскивай яблоки в корзины. Можно и без перетаскивания: нажми яблоко, затем корзину. Разложи поровну, затем выбери нужные доли.':kind==='motion'?'Передвигай героя, меняй ползунок времени или нажимай «+1 мин». Оба героя всегда проживают одинаковое время. Остановись в нужный момент и проверь.':'Поставь забор нажатием на отрезки границы. Замости грядку нажатием на квадраты. Калитку поворачивай за ручку или ползунком.'}</p><p>Здесь нет таймера. В уровне 3 задания. Три самостоятельных решения — цветок уровня. Подсказки и ошибки вернутся на повторение.</p></div><div class="lesson-stages">${m.levels.map((name,i)=>`<button class="lesson-stage" onclick="GardenGames.start('${kind}',${i})"><b>${status(kind,i).passed?'🌸':m.icon} ${name}</b><span>Нажимай, исследуй и проверяй</span><small>${status(kind,i).passed?'Пройден · повторить':'3 задания · без спешки'}</small></button>`).join('')}</div></div>`;
+      document.getElementById('game-content').innerHTML=`<div class="lesson-intro mini-intro"><div class="lesson-eyebrow">${m.icon} МАТЕМАТИКА В ДЕЙСТВИИ</div><h2>${m.name}</h2><p>${m.desc}</p><div class="lesson-rule"><b>Как играть</b><p>${kind==='harvest'?'Урожай уже разложен поровну. Отправляй целые корзинки зайчатам: нажми «Угостить» или перетащи корзинку на полянку. Нажми «Вернуть», если передумала. Когда угощение готово, проверь его.':kind==='motion'?'Передвигай героя, меняй ползунок времени или нажимай «+1 мин». Оба героя всегда проживают одинаковое время. Остановись в нужный момент и проверь.':'Поставь забор нажатием на отрезки границы. Замости грядку нажатием на квадраты. Калитку поворачивай за ручку или ползунком.'}</p><p>Здесь нет таймера. В уровне 3 задания. Три самостоятельных решения — цветок уровня. Подсказки и ошибки вернутся на повторение.</p></div><div class="lesson-stages">${m.levels.map((name,i)=>`<button class="lesson-stage" onclick="GardenGames.start('${kind}',${i})"><b>${status(kind,i).passed?'🌸':m.icon} ${name}</b><span>Нажимай, исследуй и проверяй</span><small>${status(kind,i).passed?'Пройден · повторить':'3 задания · без спешки'}</small></button>`).join('')}</div></div>`;
       document.getElementById('game-content').scrollTop=0;},
     start(kind,level){if(!meta[kind]||!Number.isInteger(level)||level<0||level>2)return;this.prepare(kind);
-      const topicId=`mini_${kind}_${level}`,review=Object.values(Learning.read(topicId)).filter(v=>v.needsReview&&v.question.miniGame===kind).slice(0,1).map(v=>v.question),deck=[...review];
+      const topicId=`mini_${kind}_${level}`,review=Object.values(Learning.read(topicId)).filter(v=>v.needsReview&&v.question.miniGame===kind).slice(0,1).map(v=>make(kind,level,Number(v.question.id.split('_').at(-1))||0)),deck=[...review];
       const offset=Math.floor(Math.random()*12)*3;
       for(let n=0;deck.length<3;n++){const q=make(kind,level,offset+n);if(!deck.some(old=>old.id===q.id))deck.push(q);}
       let index=0;window.Topic={init:()=>this.start(kind,level)};
@@ -96,7 +96,7 @@
       }});},
     unmount(){this.abort?.abort();this.abort=null;clearInterval(this.playTimer);this.playTimer=null;this.ghost?.remove();this.ghost=null;this.drag=null;this.active=null;},
     mount(q){this.unmount();const host=document.getElementById('mini-game');if(!host)return;
-      this.active={q,host,phase:'divide',locations:Array(q.interaction.total||0).fill(-1),selectedFruit:null,selected:[],time:0,chosen:[],angle:0,type:'',message:''};
+      this.active={q,host,locations:Array.from({length:q.interaction.total||0},(_,i)=>Math.floor(i/q.interaction.unit)),selected:[],time:0,chosen:[],angle:0,type:'',message:''};
       this.abort=new AbortController();const opts={signal:this.abort.signal};
       host.addEventListener('click',e=>this.click(e),opts);host.addEventListener('input',e=>{if(Round.locked)return;if(e.target.id==='mini-time')this.setTime(Number(e.target.value));if(e.target.id==='mini-angle')this.setAngle(Number(e.target.value));},opts);
       host.addEventListener('pointerdown',e=>this.pointerDown(e),opts);
@@ -107,15 +107,15 @@
       this.render();},
     render(){const s=this.active;if(!s)return;const m=s.q.interaction;s.host.innerHTML=m.kind==='harvest'?this.harvestHTML():m.kind==='motion'?this.motionHTML():m.type==='angle'?this.angleHTML():this.geometryHTML();
       if(m.kind==='motion')this.updateMotion();if(m.type==='angle')this.updateAngle();},
-    fruit(id){const s=this.active;return `<button type="button" class="apple ${s.selectedFruit===id?'picked':''}" data-fruit="${id}" aria-label="Яблоко ${id+1}${s.locations[id]>=0?', корзина '+(s.locations[id]+1):', общий урожай'}" aria-pressed="${s.selectedFruit===id}">🍎</button>`;},
-    harvestHTML(){const s=this.active,m=s.q.interaction,counts=harvestResult(m,s.locations,s.selected).counts;
-      return `<div class="mini-coach" role="status">${s.message||'Шаг 1. Сделай равные доли: разложи ВСЕ яблоки поровну.'}</div><p class="mini-instruction">${s.phase==='divide'?'Перетащи яблоко или нажми его, а затем корзинку. Чтобы вернуть яблоко, выбери его и нажми «В общий урожай».':`Шаг 2. ${m.remaining?`Зайцу отложили ${m.n}/${m.d}. Выбери корзинки с ОСТАТКОМ.`:`Выбери ${m.n}/${m.d} урожая — нажимай на целые корзинки.`}`}</p>
-        ${s.phase==='divide'?`<div class="harvest-tray" data-drop="-1"><div class="harvest-tray-title"><b>Общий урожай · ${s.locations.filter(x=>x===-1).length} осталось</b><button class="mini-small" data-drop="-1">В общий урожай ↑</button></div><div class="apple-pile">${s.locations.map((v,i)=>v===-1?this.fruit(i):'').join('')}</div></div>`:''}
-        <div class="harvest-baskets">${counts.map((count,i)=>s.phase==='divide'?`<section class="harvest-basket" data-drop="${i}"><b>🧺 Доля ${i+1}</b><div class="apple-pile">${s.locations.map((v,j)=>v===i?this.fruit(j):'').join('')}</div><button class="basket-target" data-drop="${i}">Положить сюда · ${count} 🍎</button></section>`:
-          `<button class="harvest-basket harvest-choice ${s.selected.includes(i)?'chosen':''}" data-choice="${i}" aria-pressed="${s.selected.includes(i)}"><b>🧺 Доля ${i+1}</b><span class="basket-apples" aria-hidden="true">${'🍎'.repeat(count)}</span><span>${count} яблока · 1/${m.d}</span><strong>${s.selected.includes(i)?'✓ Выбрана':'Выбрать'}</strong></button>`).join('')}</div>
-        ${s.phase==='select'?`<p class="mini-readout">Выбрано ${s.selected.length}/${m.d} урожая · ${apples(s.selected.length*m.unit)}</p>`:''}<button class="submit-btn mini-check" data-action="check">${s.phase==='divide'?'Проверить равные доли':'Готово, проверить долю'}</button>`;},
-    moveFruit(id,to){const s=this.active,m=s?.q.interaction;if(!s||Round.locked||s.phase!=='divide'||!Number.isInteger(id)||id<0||id>=m.total||!Number.isInteger(to)||to< -1||to>=m.d)return;
-      s.locations[id]=to;s.selectedFruit=null;s.message='Каждая корзина — одна доля. Сравни, одинаково ли в них яблок.';this.render();s.host.querySelector(`button[data-drop="${to}"]`)?.focus({preventScroll:true});},
+    basket(id){const s=this.active,m=s.q.interaction,given=s.selected.includes(id);
+      return `<button class="picnic-basket ${given?'given':''}" data-choice="${id}" aria-pressed="${given}" aria-label="Корзинка ${id+1}, ${apples(m.unit)}. ${given?'Вернуть в сад':'Угостить зайчат'}"><span class="picnic-basket-icon" aria-hidden="true">🧺</span><span class="picnic-apples" aria-hidden="true">${'🍎'.repeat(m.unit)}</span><b>1/${m.d} урожая</b><small>${given?'↩ Вернуть':'Угостить →'}</small></button>`;},
+    harvestHTML(){const s=this.active,m=s.q.interaction;
+      return `<div class="picnic-goal"><span aria-hidden="true">🐰</span><div><b>${m.remaining?`Белочке ${m.n}/${m.d}, зайчатам — остальное`:`Зайчатам нужно ${m.n}/${m.d} урожая`}</b><p>Нажимай «Угостить» или перетаскивай корзинки на полянку.</p></div></div>
+        <div class="picnic-orchard" data-serve="garden"><div class="picnic-heading"><b>🌳 В саду осталось: ${apples((m.d-s.selected.length)*m.unit)}</b><span>Всего урожая: ${apples(m.total)} · корзинок: ${m.d}</span></div><p class="mini-instruction">По ${apples(m.unit)} в каждой корзинке — это 1/${m.d} урожая.${!m.remaining&&s.q.level===0?` Дай зайчатам одну такую долю.`:''}</p><div class="picnic-baskets">${Array.from({length:m.d},(_,i)=>!s.selected.includes(i)?this.basket(i):'').join('')||'<p class="picnic-empty">Все корзинки на полянке. Здесь их можно оставить, если вернёшь.</p>'}</div></div>
+        <div class="rabbit-picnic" data-serve="rabbit"><div class="picnic-heading"><b>🐰 Полянка зайчат</b><span>Отдали ${s.selected.length}/${m.d} урожая = ${apples(s.selected.length*m.unit)}</span></div><div class="picnic-portion" aria-label="Отдали ${s.selected.length} из ${m.d} равных долей">${Array.from({length:m.d},(_,i)=>`<span class="${i<s.selected.length?'filled':''}">🧺</span>`).join('')}</div><div class="picnic-baskets">${s.selected.map(i=>this.basket(i)).join('')||'<p class="picnic-empty">Перенеси сюда угощение для зайчат 🐾</p>'}</div></div>
+        <button class="submit-btn mini-check" data-action="check">Угощение готово — проверить 🐰</button>`;},
+    serve(id,give){const s=this.active,m=s?.q.interaction;if(!s||Round.locked||m.kind!=='harvest'||!Number.isInteger(id)||id<0||id>=m.d)return;
+      if(give&&!s.selected.includes(id))s.selected.push(id);if(!give)s.selected=s.selected.filter(i=>i!==id);this.render();s.host.querySelector(`[data-choice="${id}"]`)?.focus({preventScroll:true});},
     motionHTML(){const m=this.active.q.interaction;return `<div class="mini-coach" id="motion-coach" role="status"></div><p class="mini-instruction">Перетащи героя по дорожке или меняй время. Оба героя двигаются за одно и то же время.</p><div class="motion-world"><div class="motion-landmarks"><span>🌳 Старт</span><span>${m.type==='single'?'🚩 Флажок':'⛲ Садовая дорожка'}</span></div>${(m.type==='single'?[0]:[0,1]).map((i)=>`<div class="motion-lane" data-lane="${i}"><div class="motion-travel" id="travel-${i}"></div>${m.type==='single'?`<span class="motion-flag" style="left:${this.percent(m.targetDistance)}%" aria-label="Флажок ${m.targetDistance} метров">🚩</span>`:''}<button class="motion-actor" data-actor="${i}" aria-label="${i?'Ёжик':'Заяц'}, перетащи или используй стрелки">${i?'🦔':'🐇'}</button></div><div class="motion-caption"><b>${i?'Ёжик':'Заяц'} · ${i?m.v2:m.v1} м/мин</b><span id="distance-${i}"></span></div>`).join('')}</div><div class="motion-clock"><b>⏱ <output id="motion-time">0</output> мин</b><label for="mini-time">Передвинь время</label><input type="range" id="mini-time" min="0" max="${m.maxTime}" step="1" value="0"><div class="mini-controls"><button data-action="back">−1 мин</button><button data-action="play" id="motion-play">▶ Пустить</button><button data-action="forward">+1 мин</button><button data-action="reset">Сначала</button></div></div><p class="mini-readout" id="motion-readout"></p><button class="submit-btn mini-check" data-action="check">Сейчас нужный момент — проверить</button>`;},
     percent(x){const m=this.active.q.interaction;return 8+84*(x-m.min)/(m.max-m.min);},
     setTime(time){if(!this.active||Round.locked)return;this.active.time=clamp(Math.round(time),0,this.active.q.interaction.maxTime);this.updateMotion();},
@@ -147,32 +147,25 @@
     },
     toggle(key){const s=this.active;if(!s||Round.locked)return;s.chosen=s.chosen.includes(key)?s.chosen.filter(x=>x!==key):[...s.chosen,key];this.render();s.host.querySelector(`[data-edge="${key}"],[data-tile="${key}"]`)?.focus({preventScroll:true});},
     click(e){if(!this.active||Round.locked||performance.now()<(this.ignoreClickUntil||0))return;const s=this.active,m=s.q.interaction;
-      const fruit=e.target.closest('[data-fruit]');if(fruit){s.selectedFruit=Number(fruit.dataset.fruit);this.render();s.host.querySelector(`[data-fruit="${s.selectedFruit}"]`)?.focus({preventScroll:true});return;}
-      const drop=e.target.closest('[data-drop]');if(drop&&s.phase==='divide'){const id=s.selectedFruit??s.locations.findIndex(x=>x===-1);if(id>=0)this.moveFruit(id,Number(drop.dataset.drop));return;}
-      const choice=e.target.closest('[data-choice]');if(choice){const i=Number(choice.dataset.choice);s.selected=s.selected.includes(i)?s.selected.filter(x=>x!==i):[...s.selected,i];this.render();return;}
+      const choice=e.target.closest('[data-choice]');if(choice){const i=Number(choice.dataset.choice);this.serve(i,!s.selected.includes(i));return;}
       const edge=e.target.closest('[data-edge]'),tile=e.target.closest('[data-tile]');if(edge||tile){this.toggle(edge?edge.dataset.edge:tile.dataset.tile);return;}
       const type=e.target.closest('[data-type]');if(type){s.type=type.dataset.type;s.host.querySelectorAll('[data-type]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.type===s.type)));return;}
       const action=e.target.closest('[data-action]')?.dataset.action;if(action==='check')this.check();if(action==='forward')this.setTime(s.time+1);if(action==='back')this.setTime(s.time-1);if(action==='reset')this.setTime(0);if(action==='play')this.play();},
     check(){const s=this.active;if(!s||Round.locked)return;const m=s.q.interaction;let correct=false;
-      if(m.kind==='harvest'){
-        const result=harvestResult(m,s.locations,s.selected);
-        if(s.phase==='divide'){
-          if(!result.equal){Round.assisted=true;s.message=`Пока не поровну: в корзинах ${result.counts.join(', ')}. ${s.locations.includes(-1)?'Разложи все яблоки.':'Переложи яблоки так, чтобы в каждой было одинаково.'}`;this.render();return;}
-          s.phase='select';s.message=`Получились равные доли! ${m.total} ÷ ${m.d} = ${m.unit} яблока в одной доле (1/${m.d}). Теперь выбери нужные корзинки.`;this.render();return;
-        }correct=result.equal&&result.chosen;
-      }else if(m.kind==='motion'){const p=positions(m,s.time);correct=m.type==='single'?p[0]===m.targetDistance:m.type==='apart'?Math.abs(p[1]-p[0])===m.targetDistance:p[0]===p[1];}
+      if(m.kind==='harvest')correct=harvestResult(m,s.locations,s.selected).chosen;
+      else if(m.kind==='motion'){const p=positions(m,s.time);correct=m.type==='single'?p[0]===m.targetDistance:m.type==='apart'?Math.abs(p[1]-p[0])===m.targetDistance:p[0]===p[1];}
       else if(m.type==='angle')correct=s.angle===m.target&&s.type===angleType(m.target);
       else {const expected=m.type==='fence'?expectedEdges(m.a,m.b):Array.from({length:m.a*m.b},(_,i)=>String(Math.floor(i/m.a)*(m.a+1)+i%m.a));correct=s.chosen.length===expected.length&&expected.every(v=>s.chosen.includes(v));}
       clearInterval(this.playTimer);this.playTimer=null;s.host.querySelectorAll('button,input').forEach(b=>b.disabled=true);s.host.querySelectorAll('[tabindex]').forEach(el=>el.setAttribute('tabindex','-1'));this.clearDrag();Round.resolve(correct,false);
     },
-    pointerDown(e){if(!this.active||Round.locked||e.button!==0)return;const fruit=e.target.closest('[data-fruit]'),actor=e.target.closest('[data-actor]'),angle=e.target.closest('[data-angle-handle]');
-      if(!fruit&&!actor&&!angle)return;this.drag={pointerId:e.pointerId,fruit:fruit?Number(fruit.dataset.fruit):null,actor:actor?Number(actor.dataset.actor):null,angle:!!angle,x:e.clientX,y:e.clientY,moved:false};},
+    pointerDown(e){if(!this.active||Round.locked||e.button!==0)return;const basket=e.target.closest('[data-choice]'),actor=e.target.closest('[data-actor]'),angle=e.target.closest('[data-angle-handle]');
+      if(!basket&&!actor&&!angle)return;this.drag={pointerId:e.pointerId,basket:basket?Number(basket.dataset.choice):null,actor:actor?Number(actor.dataset.actor):null,angle:!!angle,x:e.clientX,y:e.clientY,moved:false};},
     pointerMove(e){const d=this.drag,s=this.active;if(!d||!s||Round.locked||e.pointerId!==d.pointerId)return;if(!d.moved&&Math.hypot(e.clientX-d.x,e.clientY-d.y)<5)return;d.moved=true;e.preventDefault();
-      if(d.fruit!==null){if(!this.ghost){this.ghost=document.createElement('div');this.ghost.className='apple-ghost';this.ghost.textContent='🍎';document.body.append(this.ghost);}this.ghost.style.left=e.clientX+'px';this.ghost.style.top=e.clientY+'px';}
+      if(d.basket!==null){if(!this.ghost){this.ghost=document.createElement('div');this.ghost.className='basket-ghost';this.ghost.textContent='🧺';document.body.append(this.ghost);}this.ghost.style.left=e.clientX+'px';this.ghost.style.top=e.clientY+'px';}
       else if(d.actor!==null){const rect=s.host.querySelector(`[data-lane="${d.actor}"]`).getBoundingClientRect(),m=s.q.interaction;const x=m.min+(clamp((e.clientX-rect.left)/rect.width,.08,.92)-.08)/.84*(m.max-m.min);this.setTime((x-m.start[d.actor])/m.velocity[d.actor]);}
       else if(d.angle){const svg=s.host.querySelector('.angle-map'),point=new DOMPoint(e.clientX,e.clientY).matrixTransform(svg.getScreenCTM().inverse());this.setAngle(clamp(Math.atan2(160-point.y,point.x-160)*180/Math.PI,0,180));}
     },
-    pointerUp(e){const d=this.drag;if(!d||e.pointerId!==d.pointerId)return;if(d.moved){this.ignoreClickUntil=performance.now()+250;if(d.fruit!==null){const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-drop]');if(target)this.moveFruit(d.fruit,Number(target.dataset.drop));}}this.clearDrag();},
+    pointerUp(e){const d=this.drag;if(!d||e.pointerId!==d.pointerId)return;if(d.moved){this.ignoreClickUntil=performance.now()+250;if(d.basket!==null){const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-serve]');if(target)this.serve(d.basket,target.dataset.serve==='rabbit');}}this.clearDrag();},
     clearDrag(){this.drag=null;this.ghost?.remove();this.ghost=null;}
   };
 })();

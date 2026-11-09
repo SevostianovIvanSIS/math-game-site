@@ -901,17 +901,7 @@ button:focus-visible,summary:focus-visible,select:focus-visible { outline:3px so
 .mini-game { width:100%;text-align:left; }.mini-game button { font-family:var(--font);cursor:pointer; }.mini-game button:disabled { cursor:default; }
 .mini-coach { padding:13px 15px;border:1px solid #c8ddcd;border-radius:15px;background:#eff8ef;color:#325b40;font-size:15px;line-height:1.6; }
 .mini-instruction { font-size:14px;line-height:1.6;margin:12px 0;color:#4f6557; }
-.harvest-tray { padding:12px;background:#f8f1dd;border:1px dashed #cbb77f;border-radius:16px;margin-bottom:14px;min-height:90px; }
-.harvest-tray-title { display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;font-size:13px; }
-.apple-pile { display:flex;flex-wrap:wrap;gap:4px;min-height:41px;margin-top:7px; }
-.apple { display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border:1px solid transparent;border-radius:9px;background:transparent;font-size:27px;touch-action:none;user-select:none; }
-.apple:hover { background:#fff8; }.apple.picked { border:2px solid #8867b5;background:#f1e5ff; }
-.apple-ghost { position:fixed;z-index:10000;font-size:38px;line-height:1;transform:translate(-50%,-50%);pointer-events:none; }
-.harvest-baskets { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px; }
-.harvest-basket { padding:12px 9px;border:2px solid #dac4a3;border-radius:15px;background:repeating-linear-gradient(0deg,#fcf6e9,#fcf6e9 8px,#f8efdd 8px,#f8efdd 10px);color:#624c30;min-width:0; }
-.harvest-basket>b { font-size:14px; }.basket-target { display:block;width:100%;margin-top:8px;padding:9px 4px;background:#fffdf7;border:1px solid #c3ab87;border-radius:10px;color:#624c30;font-size:12px; }
-.mini-small { border:1px solid #bbac86;border-radius:9px;padding:7px;background:#fffdf7;color:#685638;font-size:11px; }
-.harvest-choice { display:flex;flex-direction:column;gap:10px;text-align:center;align-items:center; }.harvest-choice.chosen { background:#e5f3e5;border-color:#36845b;box-shadow:inset 0 0 0 1px #36845b; }.basket-apples { font-size:23px;overflow-wrap:anywhere;line-height:1.7; }.harvest-choice>span:not(.basket-apples),.harvest-choice>strong { font-size:12px; }
+.basket-ghost { position:fixed;z-index:10000;font-size:38px;line-height:1;transform:translate(-50%,-50%);pointer-events:none; }
 .mini-readout { margin:14px 0;text-align:center;font-size:16px;font-weight:750;color:#365943;line-height:1.6; }
 .mini-check { display:block;width:100%;margin:16px 0 0;padding:13px;font-size:16px;line-height:1.5; }
 .motion-world { background:linear-gradient(#edf4e2,#dbeaca);border:1px solid #c3d5b3;border-radius:20px;padding:14px 10px; }
@@ -929,7 +919,7 @@ button:focus-visible,summary:focus-visible,select:focus-visible { outline:3px so
 .area-tile { aspect-ratio:1;min-height:40px;border-radius:7px;font-size:25px;border:1px solid #9fbc95; }.area-tile.plot { background:#dec1a0;color:#a08565; }.area-tile.grass { background:#dbeaca;border-color:transparent; }.area-tile.laid { background:#f6dda4;border-color:#ad8b3e; }
 .angle-map { width:100%;max-width:360px;display:block;margin:14px auto;touch-action:pan-y; }.angle-map [data-angle-handle] { touch-action:none;cursor:grab; }.angle-map text { font:12px var(--font);fill:#61785c; }.angle-control { display:block;text-align:center;font-size:16px; }.angle-control output { font-weight:750; }.angle-types { display:flex;flex-wrap:wrap;gap:8px;justify-content:center; }.angle-types [aria-pressed=true] { background:#e7dcf6;border:2px solid #8760b0; }
 .mini-game-mode .question { font-size:clamp(18px,2.5vw,25px); }.mini-game-mode .game-content { max-width:850px; }.mini-game-mode .lesson-rule { align-self:stretch; }.mini-game-mode .mini-game { flex-shrink:0; }
-@media(max-width:600px){.mini-home-grid{grid-template-columns:1fr}.mini-home-card{padding:15px;display:grid;grid-template-columns:40px 1fr;gap:5px 12px}.mini-home-card>span{grid-row:span 3}.mini-home-card b{font-size:16px}.mini-home-card small,.mini-home-card em{grid-column:2}.mini-home>p{font-size:12px}.mini-coach{padding:11px;font-size:13px}.mini-instruction{font-size:12px}.harvest-baskets{grid-template-columns:repeat(2,minmax(0,1fr))}.harvest-basket{padding:10px 7px}.apple{width:36px;height:36px;flex-basis:36px;font-size:25px}.harvest-tray{padding:10px}.harvest-tray-title{font-size:12px}.motion-caption{font-size:11px;flex-wrap:wrap;gap:2px}.mini-game-mode .game-content{padding:14px 12px}.mini-game-mode .question{font-size:20px}.mini-check{font-size:14px}.angle-types button{font-size:12px}.fence-map{max-height:250px}}
+@media(max-width:600px){.mini-home-grid{grid-template-columns:1fr}.mini-home-card{padding:15px;display:grid;grid-template-columns:40px 1fr;gap:5px 12px}.mini-home-card>span{grid-row:span 3}.mini-home-card b{font-size:16px}.mini-home-card small,.mini-home-card em{grid-column:2}.mini-home>p{font-size:12px}.mini-coach{padding:11px;font-size:13px}.mini-instruction{font-size:12px}.motion-caption{font-size:11px;flex-wrap:wrap;gap:2px}.mini-game-mode .game-content{padding:14px 12px}.mini-game-mode .question{font-size:20px}.mini-check{font-size:14px}.angle-types button{font-size:12px}.fence-map{max-height:250px}}
 /* Здесь предметная сцена находится внутри панели, ей отдаём высоту экрана. */
 .mini-game-mode #garden-scene { display:none; }
 .mini-game-mode .game-content { margin-top:12px; }
@@ -937,3 +927,18 @@ button:focus-visible,summary:focus-visible,select:focus-visible { outline:3px so
 .angle-map { touch-action:none; }
 /* Пояснение не сдвигает створку под пальцем при смене типа угла. */
 #angle-coach { min-height:100px; }
+/* Один сюжет и одно действие: целые корзинки едут на пикник к зайчатам. */
+.picnic-goal { display:flex;align-items:center;gap:12px;border-radius:16px;padding:14px;background:#eee5fa;color:#513871;margin-bottom:12px; }
+.picnic-goal>span { font-size:42px; }.picnic-goal b { font-size:17px;line-height:1.5; }.picnic-goal p { margin-top:4px;font-size:13px;line-height:1.5; }
+.picnic-orchard,.rabbit-picnic { padding:14px;border-radius:18px;margin:12px 0;border:2px solid #b8d3ae;background:#f1f7e9;min-height:140px; }
+.rabbit-picnic { border-style:dashed;border-color:#bc9bca;background:repeating-linear-gradient(90deg,#fbf2f4,#fbf2f4 18px,#f7e8ef 18px,#f7e8ef 20px); }
+.picnic-heading { display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;color:#38523c;font-size:14px; }.picnic-heading>span { font-size:13px;line-height:1.5; }
+.picnic-baskets { display:flex;flex-wrap:wrap;gap:8px;min-height:78px;margin-top:12px; }
+.picnic-basket { display:flex;flex-direction:column;align-items:center;gap:3px;flex:1 0 90px;max-width:140px;min-height:110px;padding:10px 7px;border:1px solid #c4ad80;border-radius:14px;background:#fffaf0;color:#614a28;touch-action:none;user-select:none; }
+.picnic-basket.given { border-color:#b393bd;background:#fff7fc; }.picnic-basket-icon { font-size:28px; }.picnic-apples { font-size:17px;line-height:1.5; }.picnic-basket b { font-size:13px; }.picnic-basket small { font-size:12px;color:#69478c;font-weight:750; }
+.picnic-empty { font-size:14px;line-height:1.7;align-self:center;color:#74576d; }.picnic-portion { display:flex;gap:6px;margin:10px 0; }.picnic-portion span { flex:1;text-align:center;padding:5px;border:1px solid #c9b6d0;border-radius:8px;background:#fff9;opacity:.4; }.picnic-portion span.filled { background:#e5d6f1;opacity:1; }
+@media(max-width:600px){.picnic-goal{padding:12px;gap:10px}.picnic-goal b{font-size:15px}.picnic-goal p{font-size:12px}.picnic-orchard,.rabbit-picnic{padding:12px}.picnic-basket{flex-basis:90px;min-height:102px}.picnic-heading{font-size:13px}.picnic-heading>span{font-size:12px}}
+
+/* Просьба зайчат и правило одной корзинки уже видны в самой сцене. */
+.mini-game-mode .game-content:has(.picnic-goal) > .question,
+.mini-game-mode .game-content:has(.picnic-goal) > .inline-rule { display:none; }
