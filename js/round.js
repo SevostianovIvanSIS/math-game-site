@@ -61,6 +61,7 @@ const Round = {
   },
 
   stop() {
+    window.GardenGames?.unmount();
     if(window.speechSynthesis) window.speechSynthesis.cancel();
     clearTimeout(this.advanceId);
     this.advanceId = null;
@@ -76,6 +77,7 @@ const Round = {
   // ── Рендер вопроса ────────────────────────────────
 
   renderQuestion() {
+    window.GardenGames?.unmount();
     if(window.speechSynthesis)window.speechSynthesis.cancel();
     if (this.finished) return;
     if (!this.mode.endless && this.index >= this.rounds) {
@@ -94,7 +96,7 @@ const Round = {
       ? `${this.mode.icon} ${this.mode.counterLabel(this)}`
       : `Раунд ${this.index + 1} / ${this.rounds}`;
 
-    const body = q.type === 'input'
+    const body = q.type === 'interactive' ? '<div id="mini-game" class="mini-game"></div>' : q.type === 'input'
       ? `<input class="answer-input" id="answer-input" aria-label="Твой ответ" type="text" inputmode="${q.inputmode || 'decimal'}"
                 autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${q.placeholder || 'Ответ'}"
                 onkeydown="if(event.key==='Enter')Round.submitInput()">
@@ -124,6 +126,7 @@ const Round = {
     container.scrollTop=0;
     this.startedAt = this.now();
     this.locked = false;
+    if(q.type === "interactive")GardenGames.mount(q);
     // Режим отсчитывает своё время от показа вопроса (кран в «Башенках»)
     if (this.mode.onQuestionStart) this.mode.onQuestionStart();
     if (this.limitMs > 0) this.startTicking();

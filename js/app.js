@@ -151,7 +151,7 @@ const App = {
   // ── Возврат на главную ────────────────────────────
 
   goHome() {
-    document.body.classList.remove("curriculum-mode");
+    document.body.classList.remove("curriculum-mode", "mini-game-mode");
     Round.hidePopup();
     Round.stop();
     Engine.stopGame();
