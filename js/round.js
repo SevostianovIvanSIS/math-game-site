@@ -26,15 +26,17 @@ const Round = {
 
   // ── Старт ─────────────────────────────────────────
 
-  start({ topicId, rounds = 15, next }) {
+  start({ topicId, rounds = 15, next, onFinish = null, review = true }) {
     this.stop();
+    this.onFinish = onFinish;
+    this.independent = 0;
     this.topicId = topicId;
     this.rounds = rounds;
     this.next = next;
     this.modeId = (window.App && App.currentMode) || window.DEFAULT_MODE;
     this.mode = window.GAME_MODES[this.modeId] || window.GAME_MODES.battle;
     this.limitMs = this.mode.limitMs ?? 10000;
-    if(this.mode.manual && window.Learning && !LearningBank.topics.some(t=>t.id===topicId)) {
+    if(review && this.mode.manual && window.Learning && !LearningBank.topics.some(t=>t.id===topicId)) {
       const pending=Object.values(Learning.read(topicId)).filter(v=>v.needsReview && !v.question.canvas).slice(0,5).map(v=>v.question);
       this.next=()=>pending.length?pending.shift():next();
     }
@@ -103,7 +105,10 @@ const Round = {
 
     container.innerHTML = `
       <div class="round-counter">${counter}</div>
+      ${q.lesson ? `<div class="lesson-eyebrow">${Peterson.stages[q.stage].icon} ${Peterson.stages[q.stage].name} · ${PetersonBank.lessons.find(l=>l.id===q.lesson).name}</div>` : ''}
       <div class="question">${q.question}</div>
+      ${q.visual ? window.Peterson.visual(q.visual) : ''}
+      ${q.rule ? `<details class="lesson-rule inline-rule"><summary>📖 Вспомнить правило</summary><p>${q.rule}</p></details>` : ''}
       ${q.canvas ? `<div class="canvas-container"><canvas id="${q.canvas.id}" width="${q.canvas.w}" height="${q.canvas.h}"></canvas></div>` : ''}
       ${body}
       ${this.mode.manual && q.hint ? '<button class="hint-btn" onclick="Round.showHint()">💡 Нужна подсказка</button><div id="hint-text" class="hint-text" hidden></div>' : ''}
@@ -114,6 +119,9 @@ const Round = {
     const input = document.getElementById('answer-input');
     if (input) input.focus();
 
+    const rule=container.querySelector(".inline-rule");
+    if(rule)rule.addEventListener("toggle",()=>{if(rule.open&&!this.locked)this.assisted=true;});
+    container.scrollTop=0;
     this.startedAt = this.now();
     this.locked = false;
     // Режим отсчитывает своё время от показа вопроса (кран в «Башенках»)
@@ -219,9 +227,26 @@ const Round = {
     const input = document.getElementById('answer-input');
     const raw = input ? input.value : '';
     if (String(raw).trim() === '') return;
-    const isCorrect = [this.current.correctAnswer,...(this.current.accepted || [])].some(a=>this.normalize(raw) === this.normalize(a));
+    const isCorrect = this.matches(raw, this.current);
     if (input) input.classList.add(isCorrect ? 'correct' : 'wrong');
     this.resolve(isCorrect, false);
+  },
+
+  matches(raw, q) {
+    const text=String(raw).trim();
+    if(q.numeric) {
+      if(!/^[+-]?\d+(?:[.,]\d+)?$/.test(text))return false;
+      return Math.abs(Number(text.replace(',', '.'))-Number(q.correctAnswer))<1e-9;
+    }
+    if(q.fraction) {
+      const parse=value=>{
+        const m=String(value).trim().match(/^(?:(\d+)\s+)?(\d+)\s*\/\s*(\d+)$/);
+        if(m){const d=Number(m[3]);return d>0?(Number(m[1]||0)*d+Number(m[2]))/d:NaN;}
+        return /^\d+(?:[.,]\d+)?$/.test(String(value).trim())?Number(String(value).replace(',', '.')):NaN;
+      };
+      return Number.isFinite(parse(text))&&Math.abs(parse(text)-parse(q.correctAnswer))<1e-9;
+    }
+    return [q.correctAnswer,...(q.accepted || [])].some(a=>this.normalize(raw) === this.normalize(a));
   },
 
   /** «3,-2» == «3, -2», «2.5» == «2,5» */
@@ -250,6 +275,7 @@ const Round = {
     const elapsedMs = timedOut ? this.limitMs : Math.min(this.limitMs, this.now() - this.startedAt);
     this.correctLast = isCorrect; this.timedOutLast = timedOut;
     if (isCorrect) this.correct++; else this.wrong++;
+    if(isCorrect && !this.assisted && this.index<this.baseRounds)this.independent++;
     Engine.addAnswer(isCorrect);
     if(window.Learning) Learning.record(this.topicId,this.current,isCorrect,this.assisted);
     if(this.mode.manual && (!isCorrect || this.assisted) && !this.retried.has(this.current.id)) {
@@ -340,6 +366,7 @@ const Round = {
     const isRecord = Engine.saveRecord(this.topicId, this.modeId, state.score);
     Engine.saveStars(this.topicId, state.stars);
 
+    if(this.onFinish)this.onFinish(this,state);
     this.showPopup(state, isRecord);
   },
 
@@ -361,6 +388,12 @@ const Round = {
         <span>${isRecord ? '🎉 Новый рекорд' : '🥇 Рекорд'}</span><b>${best}</b>
       </div>`);
 
+    document.getElementById('curriculum-next')?.remove();
+    if(state.continueLabel) {
+      const button=document.createElement('button');button.id='curriculum-next';button.className='btn-primary';
+      button.textContent=state.continueLabel;button.onclick=()=>{this.hidePopup();Peterson.nextAction();};
+      document.querySelector('.popup-actions').prepend(button);
+    }
     const popup = document.getElementById('result-popup');
     if (popup) {
       popup.hidden = false;

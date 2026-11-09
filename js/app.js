@@ -49,6 +49,7 @@ const App = {
     const recommended=topics.slice().sort((a,b)=>Learning.stats(b.id).review-Learning.stats(a.id).review || Learning.stats(a.id).attempts-Learning.stats(b.id).attempts).find(t=>this.isUnlocked(t));
     const mastered=stats.reduce((s,t)=>s+t.mastered,0), review=stats.reduce((s,t)=>s+t.review,0);
     document.getElementById('learning-progress').innerHTML=`<span class="garden-badge">${mastered>=10?'🌳':mastered?'🌿':'🌱'}</span><div><h2>Твой сад знаний</h2><p>${mastered} заданий закреплено · ${review} ждут повторения</p><small>Закрепление — 3 верных ответа подряд без подсказки. Ошибки повторяем в первую очередь.</small>${recommended?`<button class="practice-start" onclick="App.setMode('garden');App.loadTopic('${recommended.id}')">${review?'Повторить трудное':'Начать тренировку'} · ${recommended.name} →</button>`:''}</div>`;
+    window.Peterson?.renderHome();
     this.renderModeSwitch();
     this.renderTopics();
     document.getElementById('total-stars').textContent = `★ ${topics.reduce((sum, t) => sum + Engine.getStars(t.id), 0)} / ${topics.length*3}`;
@@ -150,6 +151,7 @@ const App = {
   // ── Возврат на главную ────────────────────────────
 
   goHome() {
+    document.body.classList.remove("curriculum-mode");
     Round.hidePopup();
     Round.stop();
     Engine.stopGame();

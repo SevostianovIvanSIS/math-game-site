@@ -841,3 +841,52 @@ footer span { margin: 0 12px; color: #b5a6ff; }
 .mode-tower ~ .game-content > .pending-box { width: 100%; margin-top: 0; }
 
 @media(max-width:360px){.subject-card{flex-direction:column;gap:6px}.subject-card span{overflow-wrap:anywhere}}
+
+/* Сад открытий: учебный маршрут Петерсон */
+.curriculum { margin:24px 0 32px;padding:30px;border:1px solid #b8d6c2;border-radius:28px;background:linear-gradient(130deg,#edf8ee,#f6f1ff);color:#294a38; }
+.curriculum-header { display:flex;justify-content:space-between;gap:20px;align-items:center; }
+.curriculum-kicker,.lesson-eyebrow { font-size:11px;font-weight:750;letter-spacing:1.5px;line-height:1.7;color:#56715e; }
+.curriculum h2 { margin:8px 0;font-size:clamp(25px,3vw,36px);letter-spacing:-1px; }
+.curriculum-header p,.curriculum-help { font-size:14px;line-height:1.7; }
+.curriculum-count { flex-shrink:0;display:grid;text-align:center;gap:5px;padding:15px;border-radius:20px;background:#fff9; }
+.curriculum-count b { font-size:26px; }.curriculum-count span { font-size:11px; }
+.curriculum-guide { display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:22px 0 10px;font-size:14px;font-weight:650; }
+.curriculum-guide i { font-style:normal;color:#819487; }
+.curriculum-help { max-width:760px;color:#496753; }
+.curriculum-continue { margin:16px 0 24px; }
+.curriculum-map { display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px; }
+.curriculum-bed { display:flex;flex-direction:column;align-items:flex-start;min-width:0;gap:9px;border:1px solid #d0dfd0;border-radius:19px;padding:17px;background:#fff;color:#294a38;text-align:left;font:inherit;cursor:pointer;transition:transform .2s,box-shadow .2s; }
+.curriculum-bed:hover { transform:translateY(-3px);box-shadow:0 8px 18px #32573b16; }
+.curriculum-bed.bloomed { background:#fffce5;border-color:#dbcc84; }
+.bed-number { font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#64796a; }
+.bed-icon { font-size:29px; }.curriculum-bed>b { font-size:15px;line-height:1.4; }
+.bed-skill { font-size:12px;line-height:1.5;flex:1;color:#5d7164; }
+.bed-progress { display:flex;align-items:center;width:100%;gap:5px;margin-top:6px; }
+.bed-progress>span { display:grid;place-items:center;flex:0 0 23px;height:23px;font-size:13px;border-radius:50%;background:#f0f4ef; }
+.bed-progress>span.done { background:#357351;color:white; }.bed-progress small { margin-left:auto;font-size:11px;color:#56715e; }
+.curriculum-about { font-size:12px;line-height:1.7;margin-top:22px;color:#506b59; }.curriculum-about summary { cursor:pointer; }.curriculum-about p { margin-top:9px; }.curriculum-about a { color:#684597; }
+.lesson-intro { text-align:left; }.lesson-intro h2 { font-size:28px;margin:7px 0; }.lesson-intro>p { font-size:15px;line-height:1.7;margin:10px 0;color:#4f6358; }.lesson-intro h3 { font-size:18px;margin-top:18px; }
+.lesson-rule,.lesson-example { border:1px solid #c8decf;border-radius:16px;padding:16px;margin:16px 0;background:#f0f8f1;color:#304d39;font-size:15px;line-height:1.75;text-align:left; }
+.lesson-rule p,.lesson-example p { margin-top:6px; }.lesson-example { background:#f5f1fc;border-color:#ded1ed;color:#504264; }.example-answer { font-weight:750; }
+.lesson-stages { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px; }
+.lesson-stage { display:flex;flex-direction:column;gap:8px;padding:16px 12px;min-width:0;text-align:left;border:1px solid #c7d8ca;border-radius:16px;background:white;color:#31543d;font:inherit;cursor:pointer; }.lesson-stage.suggested { border:2px solid #458760;background:#f0f8f1; }.lesson-stage b { font-size:15px; }.lesson-stage span,.lesson-stage small { font-size:12px;line-height:1.5; }
+.lesson-visual { display:block;width:min(100%,360px);height:auto;max-height:145px;margin:8px auto;color:#314a3a;flex-shrink:0; }.lesson-visual text { fill:currentColor;font:14px var(--font); }
+.inline-rule { margin:10px 0;padding:10px 14px; }.inline-rule summary { cursor:pointer;font-size:14px; }
+.curriculum-mode .game-content { background:#fffefb; }.curriculum-mode .game-content>* { flex-shrink:0; }.curriculum-mode .answer-input { max-width:100%; }
+.curriculum-mode .question { font-size:clamp(20px,2.7vw,29px); }.curriculum-mode .lesson-eyebrow { margin-bottom:9px; }
+.curriculum-mode .popup-actions { flex-wrap:wrap; }.curriculum-mode #curriculum-next { flex-basis:100%; }
+button:focus-visible,summary:focus-visible,select:focus-visible { outline:3px solid #9370c8;outline-offset:3px; }
+@media(max-width:1100px){.curriculum-map{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){
+ .curriculum{padding:18px 14px;border-radius:22px}.curriculum-header{align-items:flex-start;gap:8px}.curriculum-count{padding:10px;max-width:85px}.curriculum-count b{font-size:20px}.curriculum-count span{font-size:10px}.curriculum-kicker{font-size:9px;letter-spacing:.8px}
+ .curriculum-map{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.curriculum-bed{padding:13px 10px}.curriculum-bed>b{font-size:13px}.bed-skill{font-size:11px}.curriculum-guide{gap:7px;font-size:12px}.curriculum-guide i{display:none}.curriculum-help{font-size:12px}
+ .lesson-stages{grid-template-columns:1fr}.lesson-stage{padding:14px}.lesson-intro h2{font-size:24px}.lesson-intro>p,.lesson-rule,.lesson-example{font-size:14px}.curriculum-mode .game-content{padding:16px 13px}.lesson-eyebrow{font-size:10px;letter-spacing:.7px}
+}
+/* Учебная палуба светлая: контраст текста и больше места для решения. */
+.curriculum-mode .game-content { color:#2e4938;flex:1;min-height:0;max-height:none;margin-top:95px; }
+.curriculum-mode .round-counter,.curriculum-mode .answer-feedback { color:#617566; }
+.curriculum-mode .answer-feedback.good { color:#226a43; }.curriculum-mode .answer-feedback.bad { color:#a12f3d; }
+.curriculum-mode .answer-input { color:#284b36;background:white;border-color:#a7c3af;font-size:23px; }
+.curriculum-mode .answer-input::placeholder { color:#708475;opacity:1; }
+.curriculum-mode .answer-input.correct { background:#e3f4e8; }.curriculum-mode .answer-input.wrong { background:#fce8e9; }
+@media(max-height:650px){.curriculum-mode .game-content{margin-top:12px}}

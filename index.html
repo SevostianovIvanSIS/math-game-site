@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Игры знаний — математика и русский</title>
-    <link rel="stylesheet" href="css/style.css?v=20261007">
+    <link rel="stylesheet" href="css/style.css?v=20261110-peterson">
 </head>
 <body>
     <header>
@@ -23,6 +23,7 @@
         </section>
         <div id="subject-switch" class="subject-switch" aria-label="Выбор тренажёра"></div>
         <div class="learning-toolbar"><label for="grade-select">Уровень заданий</label><select id="grade-select" onchange="App.setGrade(this.value)"><option value="1">1 класс</option><option value="2">2 класс</option><option value="3">3 класс</option><option value="4">4 класс</option><option value="5" selected>5 класс</option></select><span>Включая повторение предыдущих классов · для 1 класса — счёт и чтение</span></div>
+        <section id="peterson-garden" class="curriculum" hidden aria-label="Сад открытий: математика Петерсон"></section>
         <section id="learning-progress" class="learning-progress" aria-live="polite"></section>
         <div class="section-heading"><h2><span>01</span> Выбери приключение</h2><span>Учись спокойно или проверь скорость</span></div>
         <div id="mode-switch" class="mode-switch"></div>
@@ -73,9 +74,11 @@
     <script src="js/db.js?v=20260921"></script>
     <script src="js/spider-battle.js?v=20260916-2"></script>
     <script src="js/tower-game.js?v=20260922"></script>
-    <script src="js/round.js?v=20260916-2"></script>
+    <script src="js/round.js?v=20261110-peterson"></script>
     <script src="js/learning-bank.js?v=20261027-2"></script>
     <script src="js/learning.js"></script>
-    <script type="module" src="js/app.js?v=20261007"></script>
+    <script src="js/peterson-bank.js?v=20261110-peterson"></script>
+    <script src="js/peterson.js?v=20261110-peterson"></script>
+    <script type="module" src="js/app.js?v=20261110-peterson"></script>
 </body>
 </html>
